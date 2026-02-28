@@ -1,4 +1,4 @@
-# Pothuri Linux
+# Roro Linux
 
 A lightweight, customizable Linux distribution project for tiny hardware and embedded use-cases.
 

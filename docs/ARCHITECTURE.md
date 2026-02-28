@@ -1,4 +1,4 @@
-# Architecture (Pothuri Linux)
+# Architecture (Roro Linux)
 
 ## Base stack
 - Linux kernel (Buildroot managed)
