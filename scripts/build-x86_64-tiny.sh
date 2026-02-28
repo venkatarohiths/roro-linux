@@ -33,7 +33,11 @@ fi
 mkdir -p "$OUT_DIR"
 
 cd "$BR_DIR"
-make O="$OUT_DIR" qemu_x86_64_defconfig
+if [ -f "$ROOT_DIR/configs/roro_x86_64_tiny_defconfig" ]; then
+  make O="$OUT_DIR" BR2_DEFCONFIG="$ROOT_DIR/configs/roro_x86_64_tiny_defconfig" defconfig
+else
+  make O="$OUT_DIR" qemu_x86_64_defconfig
+fi
 
 # Minimal footprint tweaks (idempotent)
 ensure_flag "BR2_PACKAGE_BUSYBOX_SHOW_OTHERS=y"

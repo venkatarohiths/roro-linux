@@ -12,9 +12,11 @@
 3. **Deterministic builds**: scripted, repeatable
 4. **VM-first testing**: validate in QEMU before hardware
 
+## Implemented profiles
+- `roro_x86_64_tiny_defconfig`: tiny but practical x86_64 profile (musl + busybox + ext4 + dropbear)
+- `roro_i386_micro_defconfig`: ultra-small i386 profile for constrained VMs/devices
+
 ## Planned profiles
-- `tiny-core`: shell, networking, init, package-free base
-- `tiny-net`: core + SSH + basic diagnostics
 - `tiny-media`: core + lightweight media stack (future)
 
 ## Boot model

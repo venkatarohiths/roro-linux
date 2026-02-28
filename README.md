@@ -17,6 +17,7 @@ Built with **Buildroot** to produce tiny Linux images quickly.
 3. Optional ARM SBC profile (later phase)
 
 ## Quick Start
+### Linux/macOS
 ```bash
 # 1) Bootstrap buildroot
 bash scripts/bootstrap-buildroot.sh
@@ -26,6 +27,12 @@ bash scripts/build-x86_64-tiny.sh
 
 # 3) Run in QEMU
 bash scripts/run-qemu.sh
+```
+
+### Windows (WSL path)
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/precheck-host.ps1
+powershell -ExecutionPolicy Bypass -File scripts/build-wsl.ps1
 ```
 
 ## Repo Layout
