@@ -1,4 +1,4 @@
-# Architecture (Roro Linux)
+﻿# Architecture (Roro Linux)
 
 ## Base stack
 - Linux kernel (Buildroot managed)
@@ -9,7 +9,7 @@
 ## Design principles
 1. **Small first**: keep base image minimal
 2. **Composable profiles**: add features by profile, not in core
-3. **Deterministic builds**: scripted, repeatable
+3. **Deterministic builds**: scripted, repeatable, with SHA256 artifact manifests (`scripts/artifact-manifest.sh`)
 4. **VM-first testing**: validate in QEMU before hardware
 
 ## Implemented profiles
@@ -23,3 +23,4 @@
 - ext4 rootfs image
 - GRUB/syslinux via Buildroot image generation
 - QEMU boot for smoke tests
+
