@@ -1,6 +1,6 @@
 ﻿# Roro Linux Artifact Manifest
-Generated (UTC): 2026-03-01T03:00:42Z
+Generated (UTC): 2026-03-01T18:00:36Z
 
-| Artifact | Size (bytes) | Size (MB) | SHA256 |
-| --- | ---: | ---: | --- |
-| out/ not present yet | 0 | 0 | n/a |
+| Artifact | Modified (UTC) | Size (bytes) | Size (MB) | SHA256 |
+| --- | --- | ---: | ---: | --- |
+| out/ not present yet | n/a | 0 | 0.00 | n/a |
