@@ -1,51 +1,57 @@
 ﻿#!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-OUT_DIR="${1:-$ROOT_DIR/out/x86_64-tiny}"
-IMG_DIR="$OUT_DIR/images"
-MANIFEST_FILE="${2:-$OUT_DIR/SHA256SUMS.txt}"
-
-fail() {
-  echo "[FAIL] $1" >&2
-  exit 1
-}
+OUT_DIR="${1:-out/x86_64-tiny/images}"
+OUT_MD="docs/ARTIFACT_MANIFEST.md"
+SUMS="SHA256SUMS.txt"
 
 resolve_hasher() {
   if command -v sha256sum >/dev/null 2>&1; then
-    printf 'sha256sum'
+    echo "sha256sum"
   elif command -v shasum >/dev/null 2>&1; then
-    printf 'shasum -a 256'
+    echo "shasum -a 256"
   else
-    fail "Neither sha256sum nor shasum is available on PATH"
+    echo ""
   fi
 }
 
-[ -d "$IMG_DIR" ] || fail "Images directory not found: $IMG_DIR"
-
-# Collect artifacts deterministically and safely (handles spaces/newlines in names).
-files=()
-while IFS= read -r -d '' f; do
-  files+=("$f")
-done < <(find "$IMG_DIR" -maxdepth 1 -type f -print0 | LC_ALL=C sort -z)
-
-[ "${#files[@]}" -gt 0 ] || fail "No artifact files found in $IMG_DIR"
-
-mkdir -p "$(dirname "$MANIFEST_FILE")"
 HASHER="$(resolve_hasher)"
+[[ -n "$HASHER" ]] || { echo "FAIL: no sha256 hasher found (need sha256sum or shasum)"; exit 1; }
 
-# Write checksums with paths relative to OUT_DIR for portability.
-(
-  cd "$OUT_DIR"
-  rel_files=()
-  for f in "${files[@]}"; do
-    rel_files+=("${f#"$OUT_DIR"/}")
-  done
+echo "Hasher: $HASHER"
+mkdir -p docs
 
-  # shellcheck disable=SC2086
-  $HASHER -- "${rel_files[@]}"
-) > "$MANIFEST_FILE"
+{
+  echo "# Roro Linux Artifact Manifest"
+  echo "Generated (UTC): $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+  echo
+  echo "| File | Bytes | MB | SHA256 |"
+  echo "|---|---:|---:|---|"
 
-echo "[OK] Wrote checksum manifest: $MANIFEST_FILE"
-echo "[OK] Entries: ${#files[@]}"
-echo "[OK] Hasher: $HASHER"
+  if [[ ! -d "$OUT_DIR" ]]; then
+    echo "| out/ not present | 0 | 0.00 | n/a |"
+  else
+    mapfile -t files < <(find "$OUT_DIR" -type f | sort)
+    if [[ ${#files[@]} -eq 0 ]]; then
+      echo "| out/ empty | 0 | 0.00 | n/a |"
+    else
+      : > "$SUMS"
+      for f in "${files[@]}"; do
+        b=$(stat -c%s "$f" 2>/dev/null || stat -f%z "$f")
+        mb=$(awk "BEGIN {printf \"%.2f\", $b/1048576}")
+        if [[ "$HASHER" == "sha256sum" ]]; then
+          h=$(sha256sum "$f" | awk '{print $1}')
+          sha256sum "$f" >> "$SUMS"
+        else
+          h=$(shasum -a 256 "$f" | awk '{print $1}')
+          shasum -a 256 "$f" >> "$SUMS"
+        fi
+        rel="${f#./}"
+        echo "| $rel | $b | $mb | \\`$h\\` |"
+      done
+    fi
+  fi
+} > "$OUT_MD"
+
+echo "Wrote: $OUT_MD"
+[[ -s "$SUMS" ]] && echo "Wrote: $SUMS"

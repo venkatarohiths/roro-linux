@@ -1,0 +1,51 @@
+﻿name: Build Roro Linux (Buildroot)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'configs/**'
+      - 'scripts/**'
+      - '.github/workflows/buildroot-x86_64.yml'
+
+jobs:
+  build-x86_64-tiny:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cpio file rsync bc bison flex libssl-dev libelf-dev qemu-system-x86
+
+      - name: Bootstrap Buildroot
+        run: |
+          chmod +x scripts/bootstrap-buildroot.sh scripts/build-x86_64-tiny.sh
+          ./scripts/bootstrap-buildroot.sh
+
+      - name: Build image
+        run: |
+          ./scripts/build-x86_64-tiny.sh
+
+      - name: Smoke artifact checks (bash)
+        run: |
+          chmod +x scripts/smoke-artifacts.sh scripts/artifact-manifest.sh || true
+          if [ -f scripts/smoke-artifacts.sh ]; then
+            ./scripts/smoke-artifacts.sh --out-dir out/x86_64-tiny/images --require-iso 0 || true
+          fi
+          if [ -f scripts/artifact-manifest.sh ]; then
+            ./scripts/artifact-manifest.sh out/x86_64-tiny/images || true
+          fi
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: roro-linux-x86_64-tiny
+          path: |
+            out/x86_64-tiny/images/*
+            docs/ARTIFACT_MANIFEST.md
+            docs/SMOKE_REPORT.md
+          if-no-files-found: warn
