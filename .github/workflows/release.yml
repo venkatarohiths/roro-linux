@@ -1,0 +1,23 @@
+﻿name: Release
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y build-essential cpio rsync bc bison flex libssl-dev libelf-dev
+      - run: make build
+      - run: |
+          cd out/x86_64-tiny/images
+          sha256sum * > SHA256SUMS
+          gzip -c roro-linux.img > roro-linux-${GITHUB_REF_NAME}-x86_64.img.gz || true
+      - uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            out/x86_64-tiny/images/roro-linux-*.img.gz
+            out/x86_64-tiny/images/SHA256SUMS

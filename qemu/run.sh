@@ -1,7 +1,15 @@
-﻿#!/usr/bin/env bash
-set -euo pipefail
-IMG_DIR="${1:-out/x86_64-tiny/images}"
-KERNEL="$IMG_DIR/bzImage"
-INITRD="$IMG_DIR/rootfs.cpio"
-[ -f "$INITRD" ] || INITRD="$IMG_DIR/rootfs.cpio.gz"
-qemu-system-x86_64 -m 512 -kernel "$KERNEL" -initrd "$INITRD" -append "console=ttyS0" -nographic
+﻿#!/bin/sh
+set -eu
+MEM=512
+CPUS=1
+IMG="out/x86_64-tiny/images/roro-linux.img"
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --memory) MEM="$2"; shift 2;;
+    --cpus) CPUS="$2"; shift 2;;
+    *) shift;;
+  esac
+done
+KVM=""
+[ -e /dev/kvm ] && KVM="-enable-kvm"
+qemu-system-x86_64 $KVM -m "$MEM" -smp "$CPUS" -drive file="$IMG",if=virtio,format=raw -nic user,model=virtio-net-pci -serial mon:stdio

@@ -1,26 +1,10 @@
-﻿# Architecture (Roro Linux)
+﻿# Architecture
 
-## Base stack
-- Linux kernel (Buildroot managed)
-- BusyBox userland
-- musl libc
-- Dropbear SSH (optional profile)
+Build pipeline: Buildroot -> rootfs (musl+busybox) -> post-build trim -> post-image pack -> VM/hardware image.
 
-## Design principles
-1. **Small first**: keep base image minimal
-2. **Composable profiles**: add features by profile, not in core
-3. **Deterministic builds**: scripted, repeatable, with SHA256 artifact manifests (`scripts/artifact-manifest.sh`)
-4. **VM-first testing**: validate in QEMU before hardware
+Design choices:
+- musl over glibc for smaller/faster footprint
+- BusyBox init (no systemd) for lean boot
+- read-only root with overlay/tmpfs for durability and speed
 
-## Implemented profiles
-- `roro_x86_64_tiny_defconfig`: tiny but practical x86_64 profile (musl + busybox + ext4 + dropbear)
-- `roro_i386_micro_defconfig`: ultra-small i386 profile for constrained VMs/devices
-
-## Planned profiles
-- `tiny-media`: core + lightweight media stack (future)
-
-## Boot model
-- ext4 rootfs image
-- GRUB/syslinux via Buildroot image generation
-- QEMU boot for smoke tests
-
+Boot target: <3s to login (QEMU virtio baseline).

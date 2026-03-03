@@ -1,0 +1,7 @@
+﻿# <file system> <mount point> <type> <options> <dump> <pass>
+/dev/root / squashfs ro 0 1
+tmpfs /tmp tmpfs defaults,noatime,mode=1777 0 0
+tmpfs /var tmpfs defaults,noatime 0 0
+tmpfs /run tmpfs defaults,noatime,mode=0755 0 0
+/data /overlay ext4 defaults,noatime 0 2
+overlay / overlay overlay lowerdir=/,upperdir=/overlay/upper,workdir=/overlay/work 0 0

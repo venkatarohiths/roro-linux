@@ -1,9 +1,13 @@
 ﻿# Changelog
 
-## [0.1.0-alpha] - 2026-03-03
+All notable changes to this project will be documented in this file.
+
+## [Unreleased]
 ### Added
-- Buildroot profiles for x86_64/i386
-- VM packaging flow (VirtualBox/VMware prep)
-- CI build workflow
-- Smoke + artifact manifest tooling
-- Open-source governance docs
+- Root Makefile + build entrypoints
+- Master defconfig + kernel/busybox fragments
+- Rootfs performance overlays (fstab/sysctl/inittab/network)
+- Post-build/post-image hooks + validation
+- QEMU runner and VMware template
+- CI build/lint/release workflows
+- Docs: quickstart/architecture/customization/targets/modules

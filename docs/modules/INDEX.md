@@ -1,11 +1,10 @@
 ﻿# Module Index
 
-- `configs/` Buildroot target profiles and defconfigs
-- `scripts/` Build, smoke, manifest, validation tooling
-- `overlay/` Root filesystem overlay files
-- `docs/` Architecture, runbooks, reports
-
-## Module ownership
-- Build configs: core maintainers
-- Scripting/tooling: core maintainers + contributors
-- Docs: all contributors
+| Module | Path | Description | Status | Docs Link |
+|---|---|---|---|---|
+| Build configs | configs/ | defconfigs + kernel/busybox fragments | active | docs/targets.md |
+| Overlay | overlay/ | rootfs runtime configs | active | docs/customization.md |
+| Build scripts | scripts/ | build/validate/post hooks | active | docs/quickstart.md |
+| QEMU | qemu/ | VM runtime scripts | active | docs/quickstart.md |
+| VMware | vmware/ | vmx templates | active | docs/targets.md |
+| CI | .github/workflows/ | build/lint/release automation | active | README.md |

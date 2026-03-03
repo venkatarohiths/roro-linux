@@ -1,11 +1,13 @@
-﻿#!/usr/bin/env bash
-set -euo pipefail
-required=(
-  "configs/roro_x86_64_tiny_defconfig"
-  "scripts/build-x86_64-tiny.sh"
-  "overlay/etc/motd"
-)
-for f in "${required[@]}"; do
-  [ -e "$f" ] || { echo "Missing: $f"; exit 1; }
+﻿#!/bin/sh
+set -eu
+req_files="configs/roro_defconfig configs/linux.config configs/busybox.config overlay/etc/fstab overlay/etc/inittab scripts/post-build.sh scripts/post-image.sh"
+for f in $req_files; do
+  [ -f "$f" ] || { echo "ERROR: missing $f"; exit 1; }
 done
-echo "validate.sh: OK"
+if find overlay -type f -perm -0002 | grep -q .; then
+  echo "ERROR: world-writable file in overlay"; exit 1
+fi
+for s in scripts/*.sh qemu/*.sh; do
+  [ -f "$s" ] && sh -n "$s"
+done
+echo "validate: OK"

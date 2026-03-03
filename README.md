@@ -1,16 +1,25 @@
 ﻿# Roro Linux
 
-Lightweight, customizable Linux distro project built around Buildroot.
+![Build](https://github.com/venkatarohiths/roro-linux/actions/workflows/build.yml/badge.svg)
 
-## Open Source Ready
-- Contribution guide: `CONTRIBUTING.md`
-- Security policy: `SECURITY.md`
-- Code of conduct: `CODE_OF_CONDUCT.md`
-- Issue templates + PR template under `.github/`
-- Module map: `docs/modules/INDEX.md`
+Lightweight, customizable Buildroot-based Linux OS optimized for speed and small footprints.
 
-## Core modules
-- `configs/` target profiles
-- `scripts/` automation + validation
-- `overlay/` rootfs customization
-- `docs/` architecture + progress
+## Quick build
+```bash
+make build
+make qemu
+make release
+```
+
+## Architecture support
+| Target | Status |
+|---|---|
+| x86_64 PC/VM | Primary |
+| ARM64 Raspberry Pi 4 | Planned |
+| ARM64 QEMU virt | Planned |
+
+## Docs
+- docs/quickstart.md
+- docs/architecture.md
+- docs/customization.md
+- docs/targets.md

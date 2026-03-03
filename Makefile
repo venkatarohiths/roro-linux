@@ -1,16 +1,28 @@
-﻿.PHONY: bootstrap build smoke manifest qemu
+﻿.PHONY: build clean menuconfig qemu release validate
 
-bootstrap:
-	bash scripts/bootstrap-buildroot.sh
+BR_DIR := buildroot
+OUT_DIR := out/x86_64-tiny
 
 build:
-	bash scripts/build-x86_64-tiny.sh
+	sh scripts/validate.sh
+	sh scripts/bootstrap-buildroot.sh
+	sh scripts/build-x86_64-tiny.sh
 
-smoke:
-	bash scripts/smoke-artifacts.sh --out-dir out/x86_64-tiny/images --require-iso 0
+clean:
+	rm -rf out output build host staging target .config 2>/dev/null || true
+	@if [ -d "$(BR_DIR)" ]; then $(MAKE) -C $(BR_DIR) O=$(abspath $(OUT_DIR)) clean; fi
 
-manifest:
-	bash scripts/artifact-manifest.sh out/x86_64-tiny/images
+menuconfig:
+	sh scripts/bootstrap-buildroot.sh
+	$(MAKE) -C $(BR_DIR) O=$(abspath $(OUT_DIR)) BR2_DEFCONFIG=$(abspath configs/roro_defconfig) defconfig
+	$(MAKE) -C $(BR_DIR) O=$(abspath $(OUT_DIR)) menuconfig
 
 qemu:
-	bash qemu/run.sh
+	sh qemu/run.sh
+
+release:
+	sh scripts/artifact-manifest.sh out/x86_64-tiny/images
+	@echo "Release artifacts prepared under out/x86_64-tiny/images"
+
+validate:
+	sh scripts/validate.sh
