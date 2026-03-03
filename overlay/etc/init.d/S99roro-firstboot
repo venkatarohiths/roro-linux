@@ -1,0 +1,23 @@
+﻿#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          roro-firstboot
+# Required-Start:    $remote_fs $syslog
+# Default-Start:     S
+# Default-Stop:
+### END INIT INFO
+
+CONF=/etc/roro.conf
+FLAG=/etc/.roro_firstboot_done
+
+[ -f "$FLAG" ] && exit 0
+
+echo "[roro-firstboot] applying defaults..."
+
+if [ -f "$CONF" ]; then
+  HOSTNAME=$(grep '^HOSTNAME=' "$CONF" | cut -d= -f2)
+  [ -n "$HOSTNAME" ] && hostname "$HOSTNAME" 2>/dev/null || true
+fi
+
+echo "Roro Linux first boot initialized on $(date)" > /var/log/roro-firstboot.log 2>/dev/null || true
+touch "$FLAG"
+exit 0
