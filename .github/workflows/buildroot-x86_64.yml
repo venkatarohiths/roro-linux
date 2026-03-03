@@ -19,7 +19,7 @@ jobs:
       - name: Install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential cpio file rsync bc bison flex libssl-dev libelf-dev qemu-system-x86
+          sudo apt-get install -y build-essential cpio file rsync bc bison flex libssl-dev libelf-dev qemu-system-x86 grub-pc-bin xorriso
 
       - name: Bootstrap Buildroot
         run: |
@@ -40,6 +40,11 @@ jobs:
             ./scripts/artifact-manifest.sh out/x86_64-tiny/images || true
           fi
 
+      - name: Pack bootable live ISO
+        run: |
+          chmod +x scripts/pack-live-iso.sh
+          ./scripts/pack-live-iso.sh out/x86_64-tiny/images out/x86_64-tiny/images/roro-linux-live.iso
+
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -49,3 +54,4 @@ jobs:
             docs/ARTIFACT_MANIFEST.md
             docs/SMOKE_REPORT.md
           if-no-files-found: warn
+
