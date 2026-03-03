@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 IMG_DIR="${1:-out/x86_64-tiny/images}"

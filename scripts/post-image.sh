@@ -1,4 +1,4 @@
-﻿#!/bin/sh
+#!/bin/sh
 set -eu
 BIN_DIR="${1:-out/x86_64-tiny/images}"
 ROOT_SQ="$BIN_DIR/rootfs.squashfs"

@@ -1,4 +1,4 @@
-﻿name: Build Roro Linux (Buildroot)
+name: Build Roro Linux (Buildroot)
 
 on:
   workflow_dispatch:
@@ -24,11 +24,11 @@ jobs:
       - name: Bootstrap Buildroot
         run: |
           chmod +x scripts/bootstrap-buildroot.sh scripts/build-x86_64-tiny.sh
-          ./scripts/bootstrap-buildroot.sh
+          sh scripts/bootstrap-buildroot.sh
 
       - name: Build image
         run: |
-          ./scripts/build-x86_64-tiny.sh
+          sh scripts/build-x86_64-tiny.sh
 
       - name: Smoke artifact checks (bash)
         run: |
@@ -43,7 +43,7 @@ jobs:
       - name: Pack bootable live ISO
         run: |
           chmod +x scripts/pack-live-iso.sh
-          ./scripts/pack-live-iso.sh out/x86_64-tiny/images out/x86_64-tiny/images/roro-linux-live.iso
+          sh scripts/pack-live-iso.sh out/x86_64-tiny/images out/x86_64-tiny/images/roro-linux-live.iso
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4

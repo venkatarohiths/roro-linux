@@ -1,4 +1,4 @@
-﻿#!/bin/sh
+#!/bin/sh
 set -eu
 TARGET_DIR="${1:-target}"
 find "$TARGET_DIR" -type f -executable -exec strip --strip-unneeded {} + 2>/dev/null || true
